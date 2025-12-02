@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="images/serozan-logo-tab.png">
+    <title data-i18n="title_contact">Serozan</title>
+    <style>
+        .mega-portfolio {
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 60px;
+            width: 100%;
+            background: #ffffff;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+            opacity: 0;
+            transform: translateY(8px);
+            pointer-events: none;
+            z-index: 1000;
+            padding: 40px 0;
+            box-sizing: border-box;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .mega-portfolio::before {
+            content: "";
+            position: absolute;
+            top: -16px;
+            left: 0;
+            right: 0;
+            height: 16px;
+        }
+
+        .portfolio-wrapper:hover .mega-portfolio,
+        .mega-portfolio:hover {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .portfolio-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .mega-portfolio-inner {
+            display: flex;
+            box-sizing: border-box;
+            width: calc(100% - 76px);
+            margin: 0 auto;
+            gap: 28px;
+        }
+
+        .mega-tile {
+            flex: 1 1 0;
+            max-width: none;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            text-decoration: none;
+            display: block;
+            height: 450px;
+            transition: transform 0.25s ease;
+        }
+
+        .mega-tile:hover {
+            transform: scale(1.02);
+        }
+
+        .mega-tile::before {
+            content: none;
+        }
+
+        .mega-tile-overlay {
+            position: absolute;
+            left: 18px;
+            bottom: 18px;
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            z-index: 1;
+        }
+
+        .mega-tile-stands {
+            background-image: url('images/erfurt-vitra/erfurt-vitra-1.jpeg');
+        }
+
+        .mega-tile-construction {
+            background-image: url('images/erfurt-vitra/erfurt-vitra-3.jpeg');
+        }
+
+        @media (max-width: 800px) {
+            .mega-portfolio-inner {
+                flex-direction: column;
+                padding: 16px 16px 20px 16px;
+            }
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Blur effect when nav mega menu is open */
+        body.blur-main main,
+        body.blur-main footer {
+            filter: blur(6px);
+            pointer-events: none;
+            transition: filter 0.25s ease;
+        }
+
+        .image-strip {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .image-strip img {
+            width: 32%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        header {
+            background: #e6e6e6; /* light grey */
+            padding: 10px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center; /* vertical centering */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        header p {
+            margin: 5px 0 0 0;
+            font-size: 0.9rem;
+        }
+
+        nav {
+            background: #f8f8f8;
+            padding: 15px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1001;
+        }
+
+        nav a {
+            color: #333;
+            margin: 0 18px;
+            text-decoration: none;
+            font-size: 1.05rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        .nav-links > a:hover,
+        .portfolio-wrapper:hover > a,
+        .lang-menu a:hover {
+            text-decoration: none;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: background 0.2s ease;
+        }
+
+        .nav-inner {
+            margin: 0;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            right: 40px;
+        }
+
+        .nav-logo {
+            position: absolute;
+            left: 40px;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .nav-logo img {
+            height: 32px;
+            display: block;
+        }
+
+        #lang-button {
+            background: transparent;
+            border: none;
+            border-radius: 4px;
+            color: #333;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 1.05rem;
+        }
+
+        #lang-button:hover {
+            background: rgba(0,0,0,0.08);
+        }
+
+        .lang-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: #f8f8f8;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            padding: 4px 0;
+            min-width: 80px;
+            z-index: 1100;
+
+            /* hover-based visibility */
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(4px);
+            pointer-events: none;
+            transition: opacity 0.15s ease, transform 0.15s ease;
+        }
+
+        .lang-menu a {
+            display: block;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            text-align: left;
+            color: #333;
+        }
+
+        .lang-menu a:hover {
+            background: #e6e6e6;
+        }
+
+        .lang-dropdown:hover .lang-menu,
+        .lang-dropdown.open .lang-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        main {
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: 100px 24px 40px 24px;
+            box-sizing: border-box;
+            flex: 1;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .contact-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            gap: 28px;
+            box-sizing: border-box;
+        }
+
+        .contact-info, .contact-form, .map {
+            flex: 0 0 calc(33.333% - 28px);
+            max-width: calc(33.333% - 28px);
+            box-sizing: border-box;
+            background: #e9e9e9;
+            padding: 20px;
+            border-radius: 6px;
+        }
+
+        .contact-info h3,
+        .contact-form h3 {
+            margin-top: 0;
+        }
+
+        .contact-info p {
+            margin: 6px 0;
+            font-size: 0.95rem;
+        }
+
+        .contact-info a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+
+        .contact-form label {
+            display: block;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-family: inherit;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+
+        .contact-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .contact-form button {
+            margin-top: 15px;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 4px;
+            background: #333;
+            color: #fff;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .contact-form button:hover {
+            background: #555;
+        }
+
+        .map {
+            font-size: 0.9rem;
+            color: #555;
+            padding: 0;
+            overflow: hidden;
+            min-height: 350px;
+        }
+
+        .map iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            border-radius: 0;
+            margin-top: 0;
+            display: block;
+        }
+
+        .parallax-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            background: #ffffff;
+            will-change: background-position;
+        }
+
+        footer {
+            position: static;
+            width: 100%;
+            margin-top: 40px;
+            background: #222;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.8rem;
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            text-decoration: none;
+            z-index: 2000;
+        }
+
+        .whatsapp-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background-color: #25d366;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+        }
+
+        .whatsapp-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+            background-color: #1ebe5a;
+        }
+
+        .whatsapp-icon {
+            font-size: 18px;
+        }
+
+        @media (max-width: 600px) {
+            .whatsapp-box {
+                padding: 10px;
+                font-size: 13px;
+            }
+
+            .whatsapp-text {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            main {
+                padding: 0 10px 30px 10px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-brands/css/uicons-brands.css">
+</head>
+<body>
+
+
+
+<nav>
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+            <img src="images/serozan-logo.png" alt="Serozan Logo">
+        </a>
+        <div class="nav-links">
+            <a href="index.html" data-i18n="nav_home">Ana Sayfa</a>
+            <a href="services.html" data-i18n="nav_services">Hizmetlerimiz</a>
+            <div class="portfolio-wrapper">
+                <a href="portfolio.html" data-i18n="nav_portfolio">Portföy</a>
+                <div class="mega-portfolio">
+                    <div class="mega-portfolio-inner">
+                        <a href="portfolio-stands.html" class="mega-tile mega-tile-stands">
+                            <div class="mega-tile-overlay">Fuar / Stand</div>
+                        </a>
+                        <a href="portfolio-construction.html" class="mega-tile mega-tile-construction">
+                            <div class="mega-tile-overlay">İnşaat / Mimari</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <a href="contact.html" data-i18n="nav_contact">İletişim</a>
+        </div>
+        <div class="lang-dropdown">
+            <button id="lang-button">Dil ▾</button>
+            <div class="lang-menu">
+                <a href="#" data-lang="tr">TUR</a>
+                <a href="#" data-lang="en">ENG</a>
+                <a href="#" data-lang="de">DEU</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="parallax-bg"></div>
+
+<main id="contact">
+
+    <div class="contact-wrapper">
+        <div class="contact-info">
+            <h3 data-i18n="contact_info_header"></h3>
+            <p><strong data-i18n="contact_email_label"></strong> <a href="mailto:info@serozan.com.tr">info@serozan.com.tr</a></p>
+            <p><strong data-i18n="contact_phone_label"></strong> +90 5XX XXX XX XX</p>
+            <p><strong data-i18n="contact_address_label"></strong> Atatürk, Uysal Cd. A blok no:116, 34887 Sancaktepe/İstanbul, Türkiye</p>
+            <p><strong data-i18n="contact_hours_label"></strong> Hafta içi 09:00 – 18:00</p>
+            <p data-i18n="contact_info_note"></p>
+        </div>
+
+        <div class="contact-form">
+            <h3 data-i18n="contact_form_header"></h3>
+            <form>
+                <label for="name" data-i18n="form_name"></label>
+                <input type="text" id="name" name="name" placeholder="İsminiz">
+
+                <label for="company" data-i18n="form_company"></label>
+                <input type="text" id="company" name="company" placeholder="Firma adınız">
+
+                <label for="email" data-i18n="form_email"></label>
+                <input type="email" id="email" name="email" placeholder="ornek@firma.com">
+
+                <label for="phone" data-i18n="form_phone"></label>
+                <input type="text" id="phone" name="phone" placeholder="+90 ...">
+
+                <label for="details" data-i18n="form_details"></label>
+                <textarea id="details" name="details" placeholder="Fuar adı, tarih, metrekare, özel istekleriniz..."></textarea>
+
+                <button type="submit" data-i18n="form_submit"></button>
+            </form>
+            <p style="font-size: 0.8rem; color: #777; margin-top: 8px;" data-i18n="form_note"></p>
+        </div>
+
+        <div class="map">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3010.4533966456506!2d29.22656347656758!3d41.01533557134952!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cad0299a02d01f%3A0xc1d733e0c25061a6!2sSerozan!5e0!3m2!1str!2sde!4v1763598669946!5m2!1str!2sde"
+                allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p style="text-align:center;">
+        Copyright © 2018 Serozan Fuar Standı. Tüm hakları saklıdır.
+        <a href="https://www.instagram.com/serozanofficial/" target="_blank" style="margin-left:10px; text-decoration:none;">
+            <img src="images/instagram-logo.png" alt="Instagram" style="height:16px; vertical-align:middle;">
+        </a>
+    </p>
+</footer>
+
+
+<a href="https://wa.me/491625955563?text=Merhaba%2C%20Serozan%27la%20iletisime%20gecmek%20istiyorum."
+   class="whatsapp-float"
+   target="_blank"
+   rel="noopener">
+    <div class="whatsapp-box">
+        <span class="whatsapp-icon"><i class="fi fi-brands-whatsapp"></i></span>
+        <span class="whatsapp-text">WhatsApp ile yazın</span>
+    </div>
+</a>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const portfolioWrapper = document.querySelector('.portfolio-wrapper');
+    const megaPortfolio = document.querySelector('.mega-portfolio');
+    const body = document.body;
+
+    if (portfolioWrapper && megaPortfolio && body) {
+        const addBlur = () => body.classList.add('blur-main');
+        const removeBlur = () => body.classList.remove('blur-main');
+
+        portfolioWrapper.addEventListener('mouseenter', addBlur);
+        portfolioWrapper.addEventListener('mouseleave', () => {
+            if (!megaPortfolio.matches(':hover')) {
+                removeBlur();
+            }
+        });
+
+        megaPortfolio.addEventListener('mouseenter', addBlur);
+        megaPortfolio.addEventListener('mouseleave', removeBlur);
+    }
+});
+</script>
+<script>
+const translations = {
+    tr: {
+        nav_home: "Ana Sayfa",
+        nav_about: "Hakkımızda",
+        nav_services: "Hizmetlerimiz",
+        nav_portfolio: "Portföy",
+        nav_contact: "İletişim",
+        nav_tur: "TUR",
+        nav_eng: "ENG",
+        nav_deu: "DEU",
+        contact_title: "İletişim",
+        title_contact: "Serozan",
+        contact_info_header: "İletişim Bilgileri",
+        contact_email_label: "E-posta:",
+        contact_phone_label: "Telefon:",
+        contact_address_label: "Konum:",
+        contact_hours_label: "Çalışma Saatleri:",
+        contact_info_note: "Yeni bir fuar standı projesi, revizyon veya tekrar kurulum için bizimle her zaman iletişime geçebilirsiniz.",
+        contact_form_header: "Teklif / Proje Talep Formu",
+        form_name: "İsim Soyisim",
+        form_company: "Firma Adı",
+        form_email: "E‑posta",
+        form_phone: "Telefon",
+        form_details: "Proje / Talep Detayı",
+        form_submit: "Gönder",
+        form_note: "Not: Bu form şu anda örnek amaçlıdır. Gerçek gönderim için bir e‑posta veya backend entegrasyonu gerekir.",
+        map_header: "Konum / Fuar Alanları ile Çalışma:",
+        map_text: "Merkez ofisimiz ve üretim tesisimiz Atatürk, Uysal Cd. A blok no:116, 34887 Sancaktepe/İstanbul, Türkiye adresinde bulunmaktadır. Almanya başta olmak üzere farklı Avrupa şehirlerindeki fuarlarda stand tasarımı ve uygulaması yapıyoruz.",
+        map_note: "Harita, belirtilen merkez adresimizi göstermektedir."
+    },
+    en: {
+        nav_home: "Home",
+        nav_about: "About",
+        nav_services: "Services",
+        nav_portfolio: "Portfolio",
+        nav_contact: "Contact",
+        nav_tur: "TUR",
+        nav_eng: "ENG",
+        nav_deu: "DEU",
+        contact_title: "Contact",
+        title_contact: "Serozan",
+        contact_info_header: "Contact Information",
+        contact_email_label: "E-mail:",
+        contact_phone_label: "Phone:",
+        contact_address_label: "Address:",
+        contact_hours_label: "Working Hours:",
+        contact_info_note: "You can contact us anytime for new booth projects, revisions, or repeat installations.",
+        contact_form_header: "Quote / Project Request Form",
+        form_name: "Full Name",
+        form_company: "Company Name",
+        form_email: "E-mail",
+        form_phone: "Phone",
+        form_details: "Project / Request Details",
+        form_submit: "Submit",
+        form_note: "Note: This form is currently for demonstration purposes. Real submission requires e-mail or backend integration.",
+        map_header: "Location / Cooperation with Fairgrounds:",
+        map_text: "Our headquarters and production facility are located at Atatürk, Uysal Cd. A Block No:116, 34887 Sancaktepe/Istanbul, Türkiye. We design and deliver exhibition stands in various European cities, especially in Germany.",
+        map_note: "The map shows our main address listed above."
+    },
+    de: {
+        nav_home: "Startseite",
+        nav_about: "Über uns",
+        nav_services: "Leistungen",
+        nav_portfolio: "Referenzen",
+        nav_contact: "Kontakt",
+        nav_tur: "TUR",
+        nav_eng: "ENG",
+        nav_deu: "DEU",
+        contact_title: "Kontakt",
+        title_contact: "Serozan",
+        contact_info_header: "Kontaktinformationen",
+        contact_email_label: "E‑Mail:",
+        contact_phone_label: "Telefon:",
+        contact_address_label: "Adresse:",
+        contact_hours_label: "Arbeitszeiten:",
+        contact_info_note: "Für neue Messestand‑Projekte, Überarbeitungen oder Wiederaufbauten können Sie uns jederzeit kontaktieren.",
+        contact_form_header: "Angebots- / Projektanfrageformular",
+        form_name: "Vollständiger Name",
+        form_company: "Firmenname",
+        form_email: "E‑Mail",
+        form_phone: "Telefon",
+        form_details: "Projekt- / Anfrage­details",
+        form_submit: "Senden",
+        form_note: "Hinweis: Dieses Formular dient derzeit nur zur Demonstration. Eine echte Übermittlung erfordert eine E‑Mail‑ oder Backend‑Integration.",
+        map_header: "Standort / Zusammenarbeit mit Messegeländen:",
+        map_text: "Unser Hauptsitz und unsere Produktionsanlage befinden sich in Atatürk, Uysal Cd. A Block Nr.116, 34887 Sancaktepe/Istanbul, Türkei. Wir entwerfen und realisieren Messestände in verschiedenen europäischen Städten, insbesondere in Deutschland.",
+        map_note: "Die Karte zeigt unsere oben genannte Hauptadresse."
+    }
+};
+
+function setLanguage(lang) {
+    localStorage.setItem("lang", lang);
+    applyLanguage(lang);
+}
+
+function applyLanguage(lang) {
+    const map = translations[lang];
+    if (!map) return;
+
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        const value = map[key];
+        if (value) {
+            el.innerHTML = value;
+        }
+    });
+
+    const btn = document.getElementById('lang-button');
+    if (btn) {
+        if (lang === 'tr') {
+            btn.textContent = 'Dil ▾';
+        } else if (lang === 'en') {
+            btn.textContent = 'Language ▾';
+        } else if (lang === 'de') {
+            btn.textContent = 'Sprache ▾';
+        }
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const savedLang = localStorage.getItem("lang") || "tr";
+    applyLanguage(savedLang);
+
+    const dropdown = document.querySelector('.lang-dropdown');
+    const button = document.getElementById('lang-button');
+    if (dropdown && button) {
+        button.addEventListener('click', (e) => {
+            // Prevent page jump but do not toggle visibility;
+            // menu is controlled purely by hover.
+            e.preventDefault();
+        });
+
+        dropdown.querySelectorAll('[data-lang]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const lang = link.getAttribute('data-lang');
+                setLanguage(lang);
+                dropdown.classList.remove('open');
+            });
+        });
+    }
+});
+</script>
+
+</body>
+<script>
+window.addEventListener('scroll', () => {
+    const bg = document.querySelector('.parallax-bg');
+    if (!bg) return;
+    const y = window.scrollY * 0.25; // slower than content for 3D effect
+    bg.style.backgroundPosition = `center ${-y}px`;
+});
+</script>
+</html>

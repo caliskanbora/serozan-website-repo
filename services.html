@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="images/serozan-logo-tab.png">
+    <title data-i18n="title_services">Serozan</title>
+    <style>
+        .mega-portfolio {
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 60px;
+            width: 100%;
+            background: #ffffff;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+            opacity: 0;
+            transform: translateY(8px);
+            pointer-events: none;
+            z-index: 1000;
+            padding: 40px 0;
+            box-sizing: border-box;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .mega-portfolio::before {
+            content: "";
+            position: absolute;
+            top: -16px;
+            left: 0;
+            right: 0;
+            height: 16px;
+        }
+
+        .portfolio-wrapper:hover .mega-portfolio,
+        .mega-portfolio:hover {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+.portfolio-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+        .mega-portfolio-inner {
+            display: flex;
+            box-sizing: border-box;
+            width: calc(100% - 76px);
+            margin: 0 auto;
+            gap: 28px;
+        }
+
+        .mega-tile {
+            flex: 1 1 0;
+            max-width: none;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            text-decoration: none;
+            display: block;
+            height: 450px;
+            transition: transform 0.25s ease;
+        }
+
+        .mega-tile:hover {
+            transform: scale(1.02);
+        }
+
+        .mega-tile::before {
+            content: none;
+        }
+
+        .mega-tile-overlay {
+            position: absolute;
+            left: 18px;
+            bottom: 18px;
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            z-index: 1;
+        }
+
+        .mega-tile-stands {
+            background-image: url('images/erfurt-vitra/erfurt-vitra-1.jpeg');
+        }
+
+        .mega-tile-construction {
+            background-image: url('images/erfurt-vitra/erfurt-vitra-3.jpeg');
+        }
+
+        @media (max-width: 800px) {
+            .mega-portfolio-inner {
+                flex-direction: column;
+                padding: 16px 16px 20px 16px;
+            }
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Blur effect when nav mega menu is open */
+        body.blur-main main,
+        body.blur-main footer {
+            filter: blur(6px);
+            pointer-events: none;
+            transition: filter 0.25s ease;
+        }
+
+        .image-strip {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .image-strip img {
+            width: 32%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        header {
+            background: #e6e6e6; /* light grey */
+            padding: 10px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center; /* vertical centering */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        header p {
+            margin: 5px 0 0 0;
+            font-size: 0.9rem;
+        }
+
+        nav {
+            background: #f8f8f8;
+            padding: 15px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1001;
+        }
+
+        nav a {
+            color: #333;
+            margin: 0 18px;
+            text-decoration: none;
+            font-size: 1.05rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        .nav-links > a:hover,
+        .portfolio-wrapper:hover > a,
+        .lang-menu a:hover {
+            text-decoration: none;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: background 0.2s ease;
+        }
+
+        .nav-inner {
+            margin: 0;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            right: 40px;
+        }
+
+        .nav-logo {
+            position: absolute;
+            left: 40px;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .nav-logo img {
+            height: 32px;
+            display: block;
+        }
+
+        #lang-button {
+            background: transparent;
+            border: none;
+            border-radius: 4px;
+            color: #333;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 1.05rem;
+        }
+
+        #lang-button:hover {
+            background: rgba(0,0,0,0.08);
+        }
+
+        .lang-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: #f8f8f8;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            padding: 4px 0;
+            min-width: 80px;
+            z-index: 1100;
+
+            /* hover-based visibility */
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(4px);
+            pointer-events: none;
+            transition: opacity 0.15s ease, transform 0.15s ease;
+        }
+
+        .lang-menu a {
+            display: block;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            text-align: left;
+            color: #333;
+        }
+
+        .lang-menu a:hover {
+            background: #e6e6e6;
+        }
+
+        .lang-dropdown:hover .lang-menu,
+        .lang-dropdown.open .lang-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        main {
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: 100px 24px 40px 24px;
+            box-sizing: border-box;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 28px;
+        }
+
+        .service-group {
+            flex: 1 1 calc(50% - 28px);
+            max-width: calc(50% - 28px);
+            background: rgb(244,244,244);
+            padding: 25px;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+
+        .service-group h3 {
+            margin-top: 0;
+        }
+
+        .service-group p {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .service-list {
+            padding-left: 20px;
+        }
+
+        .parallax-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            background: #ffffff;
+            will-change: background-position;
+        }
+
+        footer {
+            position: static;
+            width: 100%;
+            margin-top: 40px;
+            background: #222;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.8rem;
+        }
+
+        /* Ensure mega menu images never change color on hover */
+        .mega-tile,
+        .mega-tile:hover,
+        .mega-tile:focus {
+            background-color: transparent !important;
+            filter: none !important;
+        }
+
+        .mega-tile::before,
+        .mega-tile:hover::before,
+        .mega-tile:focus::before {
+            content: none !important;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css">
+</head>
+<body>
+
+<nav>
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+            <img src="images/serozan-logo.png" alt="Serozan Logo">
+        </a>
+        <div class="nav-links">
+            <a href="index.html" data-i18n="nav_home">Ana Sayfa</a>
+            <a href="services.html" data-i18n="nav_services">Hizmetlerimiz</a>
+            <div class="portfolio-wrapper">
+                <a href="portfolio.html" data-i18n="nav_portfolio">Portföy</a>
+                <div class="mega-portfolio">
+                    <div class="mega-portfolio-inner">
+                        <a href="portfolio-stands.html" class="mega-tile mega-tile-stands">
+                            <div class="mega-tile-overlay">Fuar / Stand</div>
+                        </a>
+                        <a href="portfolio-construction.html" class="mega-tile mega-tile-construction">
+                            <div class="mega-tile-overlay">İnşaat / Mimari</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <a href="contact.html" data-i18n="nav_contact">İletişim</a>
+        </div>
+        <div class="lang-dropdown">
+            <button id="lang-button">Dil ▾</button>
+            <div class="lang-menu">
+                <a href="#" data-lang="tr">TUR</a>
+                <a href="#" data-lang="en">ENG</a>
+                <a href="#" data-lang="de">DEU</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="parallax-bg"></div>
+
+<main>
+
+    <div class="service-group">
+        <h3>Stand Tasarımı</h3>
+        <p>Markanızın kimliğine uygun, modern ve işlevsel fuar stand tasarımları sunuyoruz.</p>
+        <ul class="service-list">
+            <li>3D tasarım ve görselleştirme</li>
+            <li>Markaya özel konsept geliştirme</li>
+            <li>Modüler ve özel üretim tasarımlar</li>
+            <li>Tekrar kullanılabilir çözümler</li>
+        </ul>
+    </div>
+
+    <div class="service-group">
+        <h3>Üretim</h3>
+        <p>3000 m² üretim tesisimizde marangozhane, demirhane, boyahane ve dijital baskı merkezi ile kapsamlı üretim gerçekleştiriyoruz.</p>
+        <ul class="service-list">
+            <li>MDF, ahşap ve metal imalatı</li>
+            <li>Dijital baskı üretimi</li>
+            <li>Kaliteli malzeme ve profesyonel işçilik</li>
+        </ul>
+    </div>
+
+    <div class="service-group">
+        <h3>Lojistik</h3>
+        <p>Yurtiçi ve yurtdışı tüm fuar alanlarına nakliye organizasyonunu sağlıyoruz.</p>
+        <ul class="service-list">
+            <li>Uluslararası nakliye koordinasyonu</li>
+            <li>Gümrük süreçlerinin yönetimi</li>
+            <li>18 araçlık lojistik filo</li>
+        </ul>
+    </div>
+
+    <div class="service-group">
+        <h3>Kurulum & Söküm</h3>
+        <p>Profesyonel stand ekiplerimiz ile hızlı ve güvenilir montaj–demontaj hizmeti sunuyoruz.</p>
+        <ul class="service-list">
+            <li>Fuar alanında montaj</li>
+            <li>Etkinlik sonrası söküm</li>
+            <li>Yurtdışı operasyonlarında ekip yönlendirme</li>
+        </ul>
+    </div>
+
+    <div class="service-group">
+        <h3>Depolama</h3>
+        <p>İstanbul, Antalya ve Kıbrıs'taki depolarımızda standlarınızı güvenle saklıyoruz.</p>
+        <ul class="service-list">
+            <li>Güvenli depolama alanları</li>
+            <li>Bir sonraki fuara hazırlık ve bakım</li>
+            <li>Uzun ve kısa dönem depolama çözümleri</li>
+        </ul>
+    </div>
+
+</main>
+
+<footer>
+    <p style="text-align:center;">
+        Copyright © 2018 Serozan Fuar Standı. Tüm hakları saklıdır.
+        <a href="https://www.instagram.com/serozanofficial/" target="_blank" style="margin-left:10px; text-decoration:none;">
+            <img src="images/instagram-logo.png" alt="Instagram" style="height:16px; vertical-align:middle;">
+        </a>
+    </p>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const portfolioWrapper = document.querySelector('.portfolio-wrapper');
+    const megaPortfolio = document.querySelector('.mega-portfolio');
+    const body = document.body;
+
+    if (portfolioWrapper && megaPortfolio && body) {
+        const addBlur = () => body.classList.add('blur-main');
+        const removeBlur = () => body.classList.remove('blur-main');
+
+        portfolioWrapper.addEventListener('mouseenter', addBlur);
+        portfolioWrapper.addEventListener('mouseleave', () => {
+            if (!megaPortfolio.matches(':hover')) {
+                removeBlur();
+            }
+        });
+
+        megaPortfolio.addEventListener('mouseenter', addBlur);
+        megaPortfolio.addEventListener('mouseleave', removeBlur);
+    }
+});
+</script>
+<script>
+const translations = {
+    tr: {
+        nav_home: "Ana Sayfa",
+        nav_about: "Hakkımızda",
+        nav_services: "Hizmetlerimiz",
+        nav_portfolio: "Portföy",
+        nav_contact: "İletişim",
+        nav_tur: "TUR",
+        nav_eng: "ENG",
+        nav_deu: "DEU",
+        services_title: "Hizmetlerimiz",
+        title_services: "Serozan"
+    },
+    en: {
+        nav_home: "Home",
+        nav_about: "About",
+        nav_services: "Services",
+        nav_portfolio: "Portfolio",
+        nav_contact: "Contact",
+        nav_tur: "TUR",
+        nav_eng: "ENG",
+        nav_deu: "DEU",
+        services_title: "Our Services",
+        title_services: "Serozan"
+    },
+    de: {
+        nav_home: "Startseite",
+        nav_about: "Über uns",
+        nav_services: "Leistungen",
+        nav_portfolio: "Referenzen",
+        nav_contact: "Kontakt",
+        nav_tur: "TUR",
+        nav_eng: "ENG",
+        nav_deu: "DEU",
+        services_title: "Leistungen",
+        title_services: "Serozan"
+    }
+};
+
+function setLanguage(lang) {
+    localStorage.setItem("lang", lang);
+    applyLanguage(lang);
+}
+
+function applyLanguage(lang) {
+    const map = translations[lang];
+    if (!map) return;
+
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        const value = map[key];
+        if (value) {
+            el.innerHTML = value;
+        }
+    });
+
+    const btn = document.getElementById('lang-button');
+    if (btn) {
+        if (lang === 'tr') {
+            btn.textContent = 'Dil ▾';
+        } else if (lang === 'en') {
+            btn.textContent = 'Language ▾';
+        } else if (lang === 'de') {
+            btn.textContent = 'Sprache ▾';
+        }
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const savedLang = localStorage.getItem("lang") || "tr";
+    applyLanguage(savedLang);
+
+    const dropdown = document.querySelector('.lang-dropdown');
+    const button = document.getElementById('lang-button');
+    if (dropdown && button) {
+        button.addEventListener('click', (e) => {
+            // Prevent page jump but do not toggle visibility;
+            // menu is controlled purely by hover.
+            e.preventDefault();
+        });
+
+        dropdown.querySelectorAll('[data-lang]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const lang = link.getAttribute('data-lang');
+                setLanguage(lang);
+                dropdown.classList.remove('open');
+            });
+        });
+    }
+});
+</script>
+
+</body>
+<script>
+window.addEventListener('scroll', () => {
+    const bg = document.querySelector('.parallax-bg');
+    if (!bg) return;
+    const y = window.scrollY * 0.25; // slower than content for 3D effect
+    bg.style.backgroundPosition = `center ${-y}px`;
+});
+</script>
+</html>

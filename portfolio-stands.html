@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="images/serozan-logo-tab.png">
+    <title data-i18n="title_portfolio">Serozan</title>
+    <style>
+        .mega-portfolio {
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 60px;
+            width: 100%;
+            background: #ffffff;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+            opacity: 0;
+            transform: translateY(8px);
+            pointer-events: none;
+            z-index: 1000;
+            padding: 40px 0;
+            box-sizing: border-box;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .mega-portfolio::before {
+            content: "";
+            position: absolute;
+            top: -16px;
+            left: 0;
+            right: 0;
+            height: 16px;
+        }
+
+        .portfolio-wrapper:hover .mega-portfolio,
+        .mega-portfolio:hover {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .mega-portfolio-inner {
+            display: flex;
+            box-sizing: border-box;
+            width: calc(100% - 76px);
+            margin: 0 auto;
+            gap: 28px;
+        }
+
+        .mega-tile {
+            flex: 1 1 0;
+            max-width: none;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            text-decoration: none;
+            display: block;
+            height: 450px;
+            transition: transform 0.25s ease;
+        }
+
+        .mega-tile:hover {
+            transform: scale(1.02);
+        }
+
+        .mega-tile::before {
+            content: none;
+        }
+
+        .mega-tile-overlay {
+            position: absolute;
+            left: 18px;
+            bottom: 18px;
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            z-index: 1;
+        }
+
+        .mega-tile-stands {
+            background-image: url('images/erfurt-vitra/erfurt-vitra-1.jpeg');
+        }
+
+        .mega-tile-construction {
+            background-image: url('images/erfurt-vitra/erfurt-vitra-3.jpeg');
+        }
+
+        @media (max-width: 800px) {
+            .mega-portfolio-inner {
+                flex-direction: column;
+                padding: 16px 16px 20px 16px;
+            }
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Blur effect when nav mega menu is open */
+        body.blur-main main,
+        body.blur-main footer {
+            filter: blur(6px);
+            pointer-events: none;
+            transition: filter 0.25s ease;
+        }
+
+        .image-strip {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .image-strip img {
+            width: 32%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        header {
+            background: #e6e6e6; /* light grey */
+            padding: 10px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center; /* vertical centering */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        header p {
+            margin: 5px 0 0 0;
+            font-size: 0.9rem;
+        }
+
+        nav {
+            background: #f8f8f8;
+            padding: 15px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1001;
+        }
+
+        nav a {
+            color: #333;
+            margin: 0 18px;
+            text-decoration: none;
+            font-size: 1.05rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        .nav-links > a:hover,
+        .portfolio-wrapper:hover > a,
+        .lang-menu a:hover {
+            text-decoration: none;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: background 0.2s ease;
+        }
+
+        .nav-inner {
+            margin: 0;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .portfolio-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            right: 40px;
+        }
+
+        .nav-logo {
+            position: absolute;
+            left: 40px;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .nav-logo img {
+            height: 32px;
+            display: block;
+        }
+
+        #lang-button {
+            background: transparent;
+            border: none;
+            border-radius: 4px;
+            color: #333;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 1.05rem;
+        }
+
+        #lang-button:hover {
+            background: rgba(0,0,0,0.08);
+        }
+
+        .lang-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: #f8f8f8;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            padding: 4px 0;
+            min-width: 80px;
+            z-index: 1100;
+
+            /* hover-based visibility */
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(4px);
+            pointer-events: none;
+            transition: opacity 0.15s ease, transform 0.15s ease;
+        }
+
+        .lang-menu a {
+            display: block;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            text-align: left;
+            color: #333;
+        }
+
+        .lang-menu a:hover {
+            background: #e6e6e6;
+        }
+
+        .lang-dropdown:hover .lang-menu,
+        .lang-dropdown.open .lang-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        main {
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: 100px 24px 40px 24px;
+            box-sizing: border-box;
+            flex: 1;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .project {
+            flex: 0 0 calc(50% - 28px);
+            max-width: calc(50% - 28px);
+            box-sizing: border-box;
+            background: #e9e9e9;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        .projects-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            gap: 28px;
+        }
+
+        @media (max-width: 800px) {
+            .project {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+
+        .project-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .project-location {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .slider {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            background: #e9e9e9;
+            height: 350px;
+        }
+
+        .slides {
+            display: flex;
+            transition: transform 0.4s ease;
+            gap: 10px; /* horizontal spacing between images; keep in sync with JS GAP */
+        }
+
+        .slides img {
+            flex: 0 0 auto; /* width will be controlled via JS */
+            padding: 0;
+            box-sizing: border-box;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+
+        .slider-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.85);
+            border: none;
+            color: #111;
+            padding: 14px 18px;
+            cursor: pointer;
+            font-size: 22px;
+            border-radius: 10px;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .slider-button:hover {
+            background: #fff;
+            transform: translateY(-50%) scale(1.06);
+        }
+
+        .slider-button.left {
+            left: 10px;
+        }
+
+        .slider-button.right {
+            right: 10px;
+        }
+
+        .slider-dots {
+            text-align: center;
+            margin: 12px 0 20px 0;
+        }
+
+        .slider-dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+            margin: 0 3px;
+        }
+
+        .slider-dots .active {
+            background: #333;
+        }
+
+        .project-description {
+            margin-top: 12px;
+            font-size: 0.95rem;
+            color: #444;
+        }
+
+        .parallax-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            background: #ffffff;
+            will-change: background-position;
+        }
+
+        footer {
+            position: static;
+            width: 100%;
+            margin-top: 40px;
+            background: #222;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .project {
+                padding: 15px;
+            }
+        }
+
+        #lightbox-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        #lightbox-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #lightbox-overlay img {
+            max-width: 66vw;
+            max-height: 66vh;
+            border-radius: 12px;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        #lightbox-overlay.visible img {
+            transform: scale(1);
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css">
+</head>
+<body>
+
+
+
+<nav>
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+            <img src="images/serozan-logo.png" alt="Serozan Logo">
+        </a>
+        <div class="nav-links">
+            <a href="index.html" data-i18n="nav_home">Ana Sayfa</a>
+            <a href="services.html" data-i18n="nav_services">Hizmetlerimiz</a>
+            <div class="portfolio-wrapper">
+                <a href="portfolio.html" data-i18n="nav_portfolio">Portföy</a>
+                <div class="mega-portfolio">
+                    <div class="mega-portfolio-inner">
+                        <a href="portfolio-stands.html" class="mega-tile mega-tile-stands">
+                            <div class="mega-tile-overlay">Fuar / Stand</div>
+                        </a>
+                        <a href="portfolio-construction.html" class="mega-tile mega-tile-construction">
+                            <div class="mega-tile-overlay">İnşaat / Mimari</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <a href="contact.html" data-i18n="nav_contact">İletişim</a>
+        </div>
+        <div class="lang-dropdown">
+            <button id="lang-button">Dil ▾</button>
+            <div class="lang-menu">
+                <a href="#" data-lang="tr">TUR</a>
+                <a href="#" data-lang="en">ENG</a>
+                <a href="#" data-lang="de">DEU</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="parallax-bg"></div>
+
+<main>
+
+    <div class="projects-grid">
+        <!-- PROJE 1: Vitra Erfurt -->
+        <div class="project" data-project>
+            <div class="project-title">Vitra – 30 m² Stand</div>
+            <div class="project-location">Erfurt, Almanya</div>
+
+            <div class="slider" data-slider>
+                <div class="slides">
+                    <img src="images/erfurt-vitra/erfurt-vitra-1.jpeg" alt="Vitra Stand 1">
+                    <img src="images/erfurt-vitra/erfurt-vitra-2.jpeg" alt="Vitra Stand 2">
+                    <img src="images/erfurt-vitra/erfurt-vitra-3.jpeg" alt="Vitra Stand 3">
+                    <img src="images/erfurt-vitra/erfurt-vitra-4.jpeg" alt="Vitra Stand 4">
+                    <img src="images/erfurt-vitra/erfurt-vitra-5.jpeg" alt="Vitra Stand 5">
+                </div>
+                <button class="slider-button left" data-prev><i class="fi fi-br-angle-left"></i></button>
+                <button class="slider-button right" data-next><i class="fi fi-br-angle-right"></i></button>
+            </div>
+            <div class="slider-dots"></div>
+
+            <p class="project-description">
+                Vitra ürünlerini öne çıkaran, sade ve modern çizgilere sahip 30 m² Erfurt standı.
+            </p>
+        </div>
+
+        <!-- PROJE 2 -->
+        <div class="project" data-project>
+            <div class="project-title">Pharma Expo – 40 m² Stand</div>
+            <div class="project-location">Messe Düsseldorf, Almanya</div>
+
+            <div class="slider" data-slider>
+                <div class="slides">
+                    <img src="images/pharma-stand-1.jpg" alt="Pharma stand 1">
+                    <img src="images/pharma-stand-2.jpg" alt="Pharma stand 2">
+                    <img src="images/pharma-stand-3.jpg" alt="Pharma stand 3">
+                </div>
+                <button class="slider-button left" data-prev><i class="fi fi-br-angle-left"></i></button>
+                <button class="slider-button right" data-next><i class="fi fi-br-angle-right"></i></button>
+            </div>
+            <div class="slider-dots"></div>
+
+            <p class="project-description">
+                Açık, davetkâr bir tasarım, depolama alanı ve toplantı köşesi ile fonksiyonel bir pharma standı.
+            </p>
+        </div>
+
+        <!-- PROJE 3 -->
+        <div class="project" data-project>
+            <div class="project-title">MedTech Congress – 30 m² Stand</div>
+            <div class="project-location">Erfurt, Almanya</div>
+
+            <div class="slider" data-slider>
+                <div class="slides">
+                    <img src="images/medtech-stand-1.jpg" alt="MedTech stand 1">
+                    <img src="images/medtech-stand-2.jpg" alt="MedTech stand 2">
+                    <img src="images/medtech-stand-3.jpg" alt="MedTech stand 3">
+                </div>
+                <button class="slider-button left" data-prev><i class="fi fi-br-angle-left"></i></button>
+                <button class="slider-button right" data-next><i class="fi fi-br-angle-right"></i></button>
+            </div>
+            <div class="slider-dots"></div>
+
+            <p class="project-description">
+                Medikal teknolojiler için sade, temiz çizgilere sahip, ışıklandırması kuvvetli bir stand.
+            </p>
+        </div>
+
+        <!-- PROJE 4 -->
+        <div class="project" data-project>
+            <div class="project-title">International Congress – Ada Stand</div>
+            <div class="project-location">İstanbul, Türkiye</div>
+
+            <div class="slider" data-slider>
+                <div class="slides">
+                    <img src="images/island-stand-1.jpg" alt="Ada stand 1">
+                    <img src="images/island-stand-2.jpg" alt="Ada stand 2">
+                    <img src="images/island-stand-3.jpg" alt="Ada stand 3">
+                </div>
+                <button class="slider-button left" data-prev><i class="fi fi-br-angle-left"></i></button>
+                <button class="slider-button right" data-next><i class="fi fi-br-angle-right"></i></button>
+            </div>
+            <div class="slider-dots"></div>
+
+            <p class="project-description">
+                4 cepheden açık, yoğun ziyaretçi trafiğine uygun, güçlü marka görünürlüğü sağlayan ada stand.
+            </p>
+        </div>
+
+        <!-- Yeni projeler eklemek için bu yapıyı kopyalayabilirsiniz -->
+        <!--
+        <div class="project" data-project>
+            <div class="project-title">Proje Adı</div>
+            <div class="project-location">Şehir, Ülke</div>
+
+            <div class="slider" data-slider>
+                <div class="slides">
+                    <img src="images/proje-1.jpg" alt="Proje foto 1">
+                    <img src="images/proje-2.jpg" alt="Proje foto 2">
+                </div>
+                <button class="slider-button left" data-prev><i class="fi fi-br-angle-left"></i></button>
+                <button class="slider-button right" data-next><i class="fi fi-br-angle-right"></i></button>
+            </div>
+            <div class="slider-dots"></div>
+
+            <p class="project-description">
+                Proje ile ilgili kısa açıklama.
+            </p>
+        </div>
+        -->
+    </div>
+
+</main>
+
+<footer>
+    <p style="text-align:center;">
+        Copyright © 2018 Serozan Fuar Standı. Tüm hakları saklıdır.
+        <a href="https://www.instagram.com/serozanofficial/" target="_blank" style="margin-left:10px; text-decoration:none;">
+            <img src="images/instagram-logo.png" alt="Instagram" style="height:16px; vertical-align:middle;">
+        </a>
+    </p>
+</footer>
+
+<div id="lightbox-overlay" aria-hidden="true" role="dialog" tabindex="-1">
+    <img src="" alt="Büyütülmüş Görsel">
+</div>
+
+<script>
+    // Basit slider script'i – her proje için bağımsız çalışır
+    document.querySelectorAll('[data-project]').forEach(function(projectEl) {
+        const slider = projectEl.querySelector('[data-slider]');
+        const slidesContainer = slider.querySelector('.slides');
+        const images = slidesContainer.querySelectorAll('img');
+        const prevBtn = slider.querySelector('[data-prev]');
+        const nextBtn = slider.querySelector('[data-next]');
+        const dotsContainer = projectEl.querySelector('.slider-dots');
+
+        const GAP = 10; // must match .slides { gap } in CSS
+        const visibleCount = 3;
+        const maxIndex = Math.max(0, images.length - visibleCount);
+        let currentIndex = 0;
+
+        // Dot'ları oluştur (her pozisyon için bir dot)
+        for (let i = 0; i <= maxIndex; i++) {
+            const dot = document.createElement('span');
+            if (i === 0) dot.classList.add('active');
+            dotsContainer.appendChild(dot);
+        }
+
+        const dots = dotsContainer.querySelectorAll('span');
+
+        function updateSlider() {
+            // each visible image width, accounting for the 10px gaps between them
+            const slideWidth = (slider.clientWidth - GAP * (visibleCount - 1)) / visibleCount;
+
+            // set total width of the slides strip and each image width
+            slidesContainer.style.width = (images.length * slideWidth + GAP * (images.length - 1)) + 'px';
+            images.forEach(img => {
+                img.style.width = slideWidth + 'px';
+            });
+
+            // move by one image + one gap per index so the last set of images is fully visible
+            slidesContainer.style.transform = `translateX(-${currentIndex * (slideWidth + GAP)}px)`;
+
+            dots.forEach((d, i) => {
+                d.classList.toggle('active', i === currentIndex);
+            });
+        }
+
+        function showNext() {
+            currentIndex = (currentIndex + 1) % (maxIndex + 1);
+            updateSlider();
+        }
+
+        function showPrev() {
+            currentIndex = (currentIndex - 1 + (maxIndex + 1)) % (maxIndex + 1);
+            updateSlider();
+        }
+
+        updateSlider();
+
+        nextBtn.addEventListener('click', showNext);
+        prevBtn.addEventListener('click', showPrev);
+
+        window.addEventListener('resize', updateSlider);
+    });
+
+    // Lightbox functionality
+    const overlay = document.getElementById('lightbox-overlay');
+    const overlayImg = overlay.querySelector('img');
+
+    document.querySelectorAll('.slides img').forEach(function(img) {
+        img.addEventListener('click', function() {
+            overlayImg.src = img.src;
+            overlay.classList.add('visible');
+        });
+    });
+
+    overlay.addEventListener('click', function() {
+        overlay.classList.remove('visible');
+    });
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const portfolioWrapper = document.querySelector('.portfolio-wrapper');
+    const megaPortfolio = document.querySelector('.mega-portfolio');
+    const body = document.body;
+
+    if (portfolioWrapper && megaPortfolio && body) {
+        const addBlur = () => body.classList.add('blur-main');
+        const removeBlur = () => body.classList.remove('blur-main');
+
+        portfolioWrapper.addEventListener('mouseenter', addBlur);
+        portfolioWrapper.addEventListener('mouseleave', () => {
+            if (!megaPortfolio.matches(':hover')) {
+                removeBlur();
+            }
+        });
+
+        megaPortfolio.addEventListener('mouseenter', addBlur);
+        megaPortfolio.addEventListener('mouseleave', removeBlur);
+    }
+});
+</script>
+
+<script>
+const translations = {
+    tr: {
+        nav_home: "Ana Sayfa",
+        nav_about: "Hakkımızda",
+        nav_services: "Hizmetlerimiz",
+        nav_portfolio: "Portföy",
+        nav_contact: "İletişim",
+        nav_tur: "TUR",
+        nav_eng: "ENG",
+        nav_deu: "DEU",
+        portfolio_title: "Seçili Projeler",
+        title_portfolio: "Serozan"
+    },
+    en: {
+        nav_home: "Home",
+        nav_about: "About",
+        nav_services: "Services",
+        nav_portfolio: "Portfolio",
+        nav_contact: "Contact",
+        nav_tur: "TUR",
+        nav_eng: "ENG",
+        nav_deu: "DEU",
+        portfolio_title: "Selected Projects",
+        title_portfolio: "Serozan"
+    },
+    de: {
+        nav_home: "Startseite",
+        nav_about: "Über uns",
+        nav_services: "Leistungen",
+        nav_portfolio: "Referenzen",
+        nav_contact: "Kontakt",
+        nav_tur: "TUR",
+        nav_eng: "ENG",
+        nav_deu: "DEU",
+        portfolio_title: "Ausgewählte Projekte",
+        title_portfolio: "Serozan"
+    }
+};
+
+function setLanguage(lang) {
+    localStorage.setItem("lang", lang);
+    applyLanguage(lang);
+}
+
+function applyLanguage(lang) {
+    const map = translations[lang];
+    if (!map) return;
+
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        const value = map[key];
+        if (value) {
+            el.innerHTML = value;
+        }
+    });
+
+    const btn = document.getElementById('lang-button');
+    if (btn) {
+        if (lang === 'tr') {
+            btn.textContent = 'Dil ▾';
+        } else if (lang === 'en') {
+            btn.textContent = 'Language ▾';
+        } else if (lang === 'de') {
+            btn.textContent = 'Sprache ▾';
+        }
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const savedLang = localStorage.getItem("lang") || "tr";
+    applyLanguage(savedLang);
+
+    const dropdown = document.querySelector('.lang-dropdown');
+    const button = document.getElementById('lang-button');
+    if (dropdown && button) {
+        button.addEventListener('click', (e) => {
+            // Prevent page jump but do not toggle visibility;
+            // menu is controlled purely by hover.
+            e.preventDefault();
+        });
+
+        dropdown.querySelectorAll('[data-lang]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const lang = link.getAttribute('data-lang');
+                setLanguage(lang);
+                dropdown.classList.remove('open');
+            });
+        });
+    }
+});
+</script>
+
+
+<script>
+window.addEventListener('scroll', () => {
+    const bg = document.querySelector('.parallax-bg');
+    if (!bg) return;
+    const y = window.scrollY * 0.25; // slower than content for 3D effect
+    bg.style.backgroundPosition = `center ${-y}px`;
+});
+</script>
+</body>
+</html>

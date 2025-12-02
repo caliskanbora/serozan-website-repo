@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="images/serozan-logo-tab.png">
+    <title data-i18n ="title_main">Serozan</title>
+    <style>
+        .mega-portfolio {
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 60px;
+            width: 100%;
+            background: #ffffff;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+            opacity: 0;
+            transform: translateY(8px);
+            pointer-events: none;
+            z-index: 1000;
+            padding: 40px 0;
+            box-sizing: border-box;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .mega-portfolio::before {
+            content: "";
+            position: absolute;
+            top: -16px;
+            left: 0;
+            right: 0;
+            height: 16px;
+        }
+
+        .portfolio-wrapper:hover .mega-portfolio,
+        .mega-portfolio:hover {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+.portfolio-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+        .mega-portfolio-inner {
+            display: flex;
+            box-sizing: border-box;
+            width: calc(100% - 76px);
+            margin: 0 auto;
+            gap: 28px;
+        }
+
+        .mega-tile {
+            flex: 1 1 0;
+            max-width: none;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            text-decoration: none;
+            display: block;
+            height: 450px;
+            transition: transform 0.25s ease;
+        }
+
+        .mega-tile:hover {
+            transform: scale(1.02);
+        }
+
+        .mega-tile::before {
+            content: none;
+        }
+
+        .mega-tile-overlay {
+            position: absolute;
+            left: 18px;
+            bottom: 18px;
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            z-index: 1;
+        }
+
+        .mega-tile-stands {
+            background-image: url('images/erfurt-vitra/erfurt-vitra-1.jpeg');
+        }
+
+        .mega-tile-construction {
+            background-image: url('images/erfurt-vitra/erfurt-vitra-3.jpeg');
+        }
+
+        @media (max-width: 800px) {
+            .mega-portfolio-inner {
+                flex-direction: column;
+                padding: 16px 16px 20px 16px;
+            }
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Blur effect when nav mega menu is open */
+        body.blur-main #hero-slider-wrapper,
+        body.blur-main main,
+        body.blur-main footer {
+            filter: blur(6px);
+            pointer-events: none;
+            transition: filter 0.25s ease;
+        }
+
+        .image-strip {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .image-strip img {
+            width: 32%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        /* --- Hero Slider (full-width like Tesla) --- */
+        #hero-slider-wrapper {
+            margin-top: 60px;
+            margin-bottom: 20px;
+        }
+
+        .hero-slider {
+            position: relative;
+            width: 100%;
+            height: 78vh;
+            min-height: 520px;
+            max-height: 720px;
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+        }
+
+        .hero-slide {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transform: scale(1.02);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .hero-dots {
+            position: absolute;
+            left: 50%;
+            bottom: 18px;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 2;
+        }
+
+        .hero-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.45);
+            cursor: pointer;
+        }
+
+        .hero-dot.active {
+            background: #ffffff;
+        }
+
+        .hero-nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.85);
+            border: none;
+            color: #111;
+            padding: 14px 18px;
+            cursor: pointer;
+            font-size: 22px;
+            border-radius: 10px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.22);
+            transition: background 0.2s ease, transform 0.2s ease;
+            z-index: 3;
+        }
+        .hero-nav-button:hover {
+            background: #fff;
+            transform: translateY(-50%) scale(1.06);
+        }
+        .hero-nav-button.left { left: 18px; }
+        .hero-nav-button.right { right: 18px; }
+
+        header {
+            background: #e6e6e6; /* light grey */
+            padding: 10px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center; /* vertical centering */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        header p {
+            margin: 5px 0 0 0;
+            font-size: 0.9rem;
+        }
+
+        nav {
+            background: #f8f8f8;
+            padding: 15px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1001;
+        }
+
+        nav a {
+            color: #333;
+            margin: 0 18px;
+            text-decoration: none;
+            font-size: 1.05rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        .nav-links > a:hover,
+        .portfolio-wrapper:hover > a,
+        .lang-menu a:hover {
+            text-decoration: none;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: background 0.2s ease;
+        }
+
+        .nav-inner {
+            margin: 0;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            right: 40px;
+        }
+
+        .nav-logo {
+            position: absolute;
+            left: 40px;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .nav-logo img {
+            height: 32px;
+            display: block;
+        }
+
+        #lang-button {
+            background: transparent;
+            border: none;
+            border-radius: 4px;
+            color: #333;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 1.05rem;
+        }
+
+        #lang-button:hover {
+            background: rgba(0,0,0,0.08);
+        }
+
+        .lang-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: #f8f8f8;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            padding: 4px 0;
+            min-width: 80px;
+            z-index: 1100;
+
+            /* hover-based visibility */
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(4px);
+            pointer-events: none;
+            transition: opacity 0.15s ease, transform 0.15s ease;
+        }
+
+        .lang-menu a {
+            display: block;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            text-align: left;
+            color: #333;
+        }
+
+        .lang-menu a:hover {
+            background: #e6e6e6;
+        }
+
+        .lang-dropdown:hover .lang-menu,
+        .lang-dropdown.open .lang-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        main {
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: 20px 24px 40px 24px; /* small gap between slider and stats cards */
+            box-sizing: border-box;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+            padding: 10px 0;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+        .parallax-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100vh;
+            z-index: -1;
+            background: #ffffff;
+            will-change: background-position;
+        }
+
+        footer {
+            position: static;
+            width: 100%;
+            margin-top: 40px;
+            background: #222;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.8rem;
+        }
+
+        /* --- Stats Section Styles --- */
+        .stats-section {
+            background: transparent;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 20px 0 40px 0;
+            margin: 20px 0 40px 0;
+        }
+        .stats-section h2 {
+            font-size: 1.7rem;
+            margin-bottom: 36px;
+            letter-spacing: 0.01em;
+            color: #222;
+        }
+        .stats-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 28px;
+            justify-content: center;
+        }
+        .stat-card {
+            background: #e9e9e9;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            flex: 0 0 calc(50% - 28px);
+            max-width: calc(50% - 28px); /* two cards per row */
+            overflow: hidden;
+            height: 300px;
+        }
+        .stat-card.reverse {
+            flex-direction: row-reverse;
+        }
+        .stat-content {
+            flex: 1 1 0;
+            padding: 26px 20px 18px 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 300px;
+            background: #e9e9e9;
+        }
+        .stat-eyebrow {
+            font-size: 1.06rem;
+            color: #888;
+            margin-bottom: 5px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+        .stat-number {
+            font-size: 5.2rem;
+            font-weight: bold;
+            color: #c01818; /* Serozan kırmızısı tonu */
+            margin-bottom: 4px;
+            letter-spacing: 0.02em;
+        }
+        .stat-label {
+            font-size: 1.04rem;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .stat-note {
+            font-size: 0.96rem;
+            color: #666;
+            margin-bottom: 0;
+        }
+        .stat-image {
+            flex: 0 0 40%;
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            background: #e9e9e9;
+            min-width: 0;
+            overflow: hidden;
+            height: 300px;
+        }
+        .stat-image img {
+            width: 100%;
+            object-fit: cover;
+            height: 100%;
+            border-radius: 0;
+            display: block;
+        }
+
+        @media (max-width: 900px) {
+            .stats-grid {
+                flex-direction: column;
+                gap: 30px 0;
+                align-items: center;
+            }
+            .stat-card, .stat-card.reverse {
+                max-width: 100%;
+                flex: 0 0 100%;
+            }
+        }
+        @media (max-width: 600px) {
+            .stats-section {
+                padding: 18px 4px;
+            }
+            .stat-card, .stat-card.reverse {
+                flex-direction: column;
+                min-width: 0;
+                max-width: 100%;
+            }
+            .stat-image {
+                min-width: 100%;
+                max-width: 100%;
+                height: 150px;
+            }
+            .stat-image img {
+                height: 150px;
+            }
+            .stat-content {
+                padding: 16px 10px 12px 14px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-bold-rounded/css/uicons-bold-rounded.css">
+</head>
+<body>
+
+<nav>
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+            <img src="images/serozan-logo.png" alt="Serozan Logo">
+        </a>
+        <div class="nav-links">
+            <a href="index.html" data-i18n="nav_home">Ana Sayfa</a>
+            <a href="services.html" data-i18n="nav_services">Hizmetlerimiz</a>
+            <div class="portfolio-wrapper">
+                <a href="portfolio.html" data-i18n="nav_portfolio">Portföy</a>
+                <div class="mega-portfolio">
+                    <div class="mega-portfolio-inner">
+                        <a href="portfolio-stands.html" class="mega-tile mega-tile-stands">
+                            <div class="mega-tile-overlay">Fuar / Stand</div>
+                        </a>
+                        <a href="portfolio-construction.html" class="mega-tile mega-tile-construction">
+                            <div class="mega-tile-overlay">İnşaat / Mimari</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <a href="contact.html" data-i18n="nav_contact">İletişim</a>
+        </div>
+        <div class="lang-dropdown">
+            <button id="lang-button">Dil ▾</button>
+            <div class="lang-menu">
+                <a href="#" data-lang="tr" data-i18n="nav_tur">TUR</a>
+                <a href="#" data-lang="en" data-i18n="nav_eng">ENG</a>
+                <a href="#" data-lang="de" data-i18n="nav_deu">DEU</a>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="parallax-bg"></div>
+
+<section id="hero-slider-wrapper">
+    <div style="width:100%; margin:0; padding:0;">
+        <div class="hero-slider">
+            <div class="hero-slide active" style="background-image:url('images/erfurt-vitra/erfurt-vitra-1.jpeg');"></div>
+            <div class="hero-slide" style="background-image:url('images/erfurt-vitra/erfurt-vitra-2.jpeg');"></div>
+            <div class="hero-slide" style="background-image:url('images/erfurt-vitra/erfurt-vitra-3.jpeg');"></div>
+            <div class="hero-slide" style="background-image:url('images/erfurt-vitra/erfurt-vitra-4.jpeg');"></div>
+            <div class="hero-slide" style="background-image:url('images/erfurt-vitra/erfurt-vitra-5.jpeg');"></div>
+
+            <div class="hero-dots">
+                <span class="hero-dot active" data-index="0"></span>
+                <span class="hero-dot" data-index="1"></span>
+                <span class="hero-dot" data-index="2"></span>
+                <span class="hero-dot" data-index="3"></span>
+                <span class="hero-dot" data-index="4"></span>
+            </div>
+            <button class="hero-nav-button left" id="hero-prev"><i class="fi fi-br-angle-left"></i></button>
+            <button class="hero-nav-button right" id="hero-next"><i class="fi fi-br-angle-right"></i></button>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const portfolioWrapper = document.querySelector('.portfolio-wrapper');
+    const megaPortfolio = document.querySelector('.mega-portfolio');
+    const body = document.body;
+
+    if (portfolioWrapper && megaPortfolio && body) {
+        const addBlur = () => body.classList.add('blur-main');
+        const removeBlur = () => body.classList.remove('blur-main');
+
+        portfolioWrapper.addEventListener('mouseenter', addBlur);
+        portfolioWrapper.addEventListener('mouseleave', () => {
+            // Only remove blur if the mega menu itself is not hovered
+            if (!megaPortfolio.matches(':hover')) {
+                removeBlur();
+            }
+        });
+
+        megaPortfolio.addEventListener('mouseenter', addBlur);
+        megaPortfolio.addEventListener('mouseleave', removeBlur);
+    }
+});
+</script>
+<script>
+const heroSlidesEls = document.querySelectorAll('.hero-slide');
+const heroDotsEls = document.querySelectorAll('.hero-dot');
+let currentHeroIndex = 0;
+let heroTimer = null;
+
+function showHeroSlide(index) {
+    if (!heroSlidesEls.length) return;
+    currentHeroIndex = (index + heroSlidesEls.length) % heroSlidesEls.length;
+
+    heroSlidesEls.forEach((slide, i) => {
+        slide.classList.toggle('active', i === currentHeroIndex);
+    });
+    heroDotsEls.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentHeroIndex);
+    });
+}
+
+function startHeroAuto() {
+    if (heroTimer) clearInterval(heroTimer);
+    heroTimer = setInterval(() => {
+        showHeroSlide(currentHeroIndex + 1);
+    }, 5000);
+}
+
+heroDotsEls.forEach(dot => {
+    dot.addEventListener('click', () => {
+        const idx = parseInt(dot.getAttribute('data-index'), 10);
+        showHeroSlide(idx);
+        startHeroAuto();
+    });
+});
+
+showHeroSlide(0);
+startHeroAuto();
+
+document.getElementById("hero-prev").addEventListener("click", () => {
+    showHeroSlide(currentHeroIndex - 1);
+    startHeroAuto();
+});
+document.getElementById("hero-next").addEventListener("click", () => {
+    showHeroSlide(currentHeroIndex + 1);
+    startHeroAuto();
+});
+</script>
+
+<main>
+    <section class="stats-section">
+
+        <div class="stats-grid">
+            <article class="stat-card">
+                <div class="stat-content">
+                    <div class="stat-eyebrow" data-i18n="stats_install_eyebrow">Kurulum &amp; Söküm</div>
+                    <div class="stat-number">2800+</div>
+                    <div class="stat-label" data-i18n="stats_install_label">stand kurulumu &amp; sökümü</div>
+                    <p class="stat-note" data-i18n="stats_install_note">
+                        Her yıl, çoğu 6–64 m² aralığında olmak üzere, 6 m²'den 920 m²'ye kadar binlerce standın montaj ve demontajını gerçekleştiriyoruz.
+                    </p>
+                </div>
+                <div class="stat-image">
+                    <img src="images/erfurt-vitra/erfurt-vitra-3.jpeg" alt="Kurulum ve söküm">
+                </div>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-content">
+                    <div class="stat-eyebrow" data-i18n="stats_newprod_eyebrow">Yeni Üretim &amp; Tasarım</div>
+                    <div class="stat-number">80+</div>
+                    <div class="stat-label" data-i18n="stats_newprod_label">yeni stand / yıl</div>
+                    <p class="stat-note" data-i18n="stats_newprod_note">
+                        Her yıl 80'in üzerinde yeni stand tasarlıyor ve üretiyoruz; markaya özel, tekrar kullanılabilir çözümler geliştiriyoruz.
+                    </p>
+                </div>
+                <div class="stat-image">
+                    <img src="images/erfurt-vitra/erfurt-vitra-1.jpeg" alt="Stand üretimi">
+                </div>
+            </article>
+
+            <article class="stat-card reverse">
+                <div class="stat-content">
+                    <div class="stat-eyebrow" data-i18n="stats_area_eyebrow">Toplam Kurulu Alan</div>
+                    <div class="stat-number">48.000+</div>
+                    <div class="stat-label" data-i18n="stats_area_label">m² stand alanı / yıl</div>
+                    <p class="stat-note" data-i18n="stats_area_note">
+                        Farklı sektör ve etkinliklerde, her yıl toplamda 48.000 m²'yi aşan stand alanını kuruyoruz.
+                    </p>
+                </div>
+                <div class="stat-image">
+                    <img src="images/erfurt-vitra/erfurt-vitra-4.jpeg" alt="Stand tasarımı">
+                </div>
+            </article>
+
+            <article class="stat-card reverse">
+                <div class="stat-content">
+                    <div class="stat-eyebrow" data-i18n="stats_intl_eyebrow">Uluslararası Kapsam</div>
+                    <div class="stat-number">5 / 17</div>
+                    <div class="stat-label" data-i18n="stats_intl_label">ülke / şehir</div>
+                    <p class="stat-note" data-i18n="stats_intl_note">
+                        5 farklı ülkede ve 17 farklı şehirde fuar, kongre ve etkinlik projeleri yürütüyoruz.
+                    </p>
+                </div>
+                <div class="stat-image">
+                    <img src="images/background2.jpg" alt="Farklı şehir ve ülkeler">
+                </div>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-content">
+                    <div class="stat-eyebrow" data-i18n="stats_clients_eyebrow">Müşteri Portföyü</div>
+                    <div class="stat-number">210+</div>
+                    <div class="stat-label" data-i18n="stats_clients_label">farklı şirket</div>
+                    <p class="stat-note" data-i18n="stats_clients_note">
+                        Yaklaşık 180'i ilaç sektörü olmak üzere, 210'dan fazla şirket ile uzun dönemli iş ortaklıkları yürütüyoruz.
+                    </p>
+                </div>
+                <div class="stat-image">
+                    <img src="images/erfurt-vitra/erfurt-vitra-5.jpeg" alt="Müşteri portföyü">
+                </div>
+            </article>
+            <article class="stat-card">
+                <div class="stat-content">
+                    <div class="stat-eyebrow" data-i18n="stats_team_eyebrow">Ekip &amp; Organizasyon</div>
+                    <div class="stat-number">120+</div>
+                    <div class="stat-label" data-i18n="stats_team_label">çalışan</div>
+                    <p class="stat-note" data-i18n="stats_team_note">
+                        Farklı uzmanlık alanlarından 120'den fazla çalışanımızla, tasarımdan lojistiğe tüm süreci tek elden yönetiyoruz.
+                    </p>
+                </div>
+                <div class="stat-image">
+                    <img src="images/erfurt-vitra/erfurt-vitra-2.jpeg" alt="Toplam kurulu stand alanı">
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p style="text-align:center;">
+        <span data-i18n="footer_main">Copyright © 2018 Serozan Fuar Standı. Tüm hakları saklıdır.</span>
+        <a href="https://www.instagram.com/serozanofficial/" target="_blank" style="margin-left:10px; text-decoration:none;">
+            <img src="images/instagram-logo.png" alt="Instagram" style="height:16px; vertical-align:middle;">
+        </a>
+    </p>
+</footer>
+
+<script>
+const translations = {
+    tr: {
+        title_main: "Serozan",
+        nav_home: "Ana Sayfa",
+        nav_about: "Hakkımızda",
+        nav_services: "Hizmetlerimiz",
+        nav_portfolio: "Portföy",
+        nav_contact: "İletişim",
+        nav_tur: "TUR",
+        nav_eng: "ENG",
+        nav_deu: "DEU",
+
+        about_title: "Hakkımızda",
+        about_p1: "Grubumuz; inşaat, fuar stand imalatı, dijital baskı çözümleri ve portatif reklam üniteleri alanlarında faaliyet göstermektedir. İnşaat ve restorasyon geçmişi 1986 yılına dayanan firmamız, 2003 yılından itibaren fuar ve kongre standcılığı alanında imalat, satış, kiralama, depolama, montaj–demontaj ve lojistik hizmetlerini artan bir ivme ve yenilikçi yaklaşım ile sürdürmektedir.",
+        about_p2: "Uzun süredir yürüttüğümüz çalışmalar sonucunda; kongre, fuar, organizasyon, lansman, sunum ve tanıtım faaliyetlerinde kullanılan portatif reklam üniteleri ile ilgili projelerimizi de hayata geçirdik. Tasarım ve üretimi tamamen bize ait olan ve ismimize patentli iki yeni ürünümüzle bu alanda da hizmet vermeye başlamış bulunuyoruz.",
+        about_p3: "İstanbul Sancaktepe’deki 3000 m² üretim alanımız (marangozhane, demirhane, boyahane ve dijital baskı merkezi), depo ve merkez ofisimiz; Antalya Belek’teki 4000 m² depomuz ve Kıbrıs Girne’deki 500 m² depomuz ile geniş bir operasyon kapasitesine sahibiz. 18 araçlık lojistik filomuz ve 53 kişilik profesyonel kadromuz ile tüm süreçleri eksiksiz bir şekilde yönetiyoruz.",
+        about_p4: "35 yılı aşan tecrübemiz ve uzman ekibimizle, inşaat, mimarlık ve fuar stand hizmetlerinde güvenilir, yenilikçi ve çözüm odaklı bir iş ortağı olmayı sürdürüyoruz.",
+
+        services_title: "Hizmetlerimiz",
+        services_item1: "<strong>Stand Tasarımı:</strong> Markanıza ve etkinliğinize özel çözümler.",
+        services_item2: "<strong>Üretim:</strong> Yüksek kaliteli malzemelerle profesyonel üretim.",
+        services_item3: "<strong>Lojistik:</strong> Uluslararası taşıma ve koordinasyon.",
+        services_item4: "<strong>Kurulum &amp; Söküm:</strong> Hızlı ve güvenilir montaj ve demontaj hizmeti.",
+        services_item5: "<strong>Depolama:</strong> Standlarınız için güvenli depolama alanı.",
+
+        process_title: "Süreç",
+        process_step1: "Müşteri görüşmesi ve ihtiyaç analizi",
+        process_step2: "Tasarım konsepti ve 3D görselleştirme",
+        process_step3: "Malzeme üretimi ve hazırlık",
+        process_step4: "Uluslararası nakliye ve yerinde kurulum",
+        process_step5: "Fuar sonrası söküm",
+        process_step6: "Depolama ve sonraki fuarlar için hazırlık",
+
+        contact_title: "İletişim",
+        contact_text1: "Teklif talebi veya proje görüşmesi için:",
+        contact_text2: "E-posta: &lt;a href=\"mailto:info@serozan.com.tr\"&gt;info@serozan.com.tr&lt;/a&gt;",
+
+        footer_main: "Copyright © 2018 Serozan Fuar Standı. Tüm hakları saklıdır.",
+
+        stats_install_eyebrow: "Kurulum &amp; Söküm",
+        stats_install_label: "stand kurulumu &amp; sökümü",
+        stats_install_note: "Her yıl, çoğu 6–64 m² aralığında olmak üzere, 6 m²'den 920 m²'ye kadar binlerce standın montaj ve demontajını gerçekleştiriyoruz.",
+
+        stats_newprod_eyebrow: "Yeni Üretim &amp; Tasarım",
+        stats_newprod_label: "yeni stand / yıl",
+        stats_newprod_note: "Her yıl 80'in üzerinde yeni stand tasarlıyor ve üretiyoruz; markaya özel, tekrar kullanılabilir çözümler geliştiriyoruz.",
+
+        stats_area_eyebrow: "Toplam Kurulu Alan",
+        stats_area_label: "m² stand alanı / yıl",
+        stats_area_note: "Farklı sektör ve etkinliklerde, her yıl toplamda 48.000 m²'yi aşan stand alanını kuruyoruz.",
+
+        stats_intl_eyebrow: "Uluslararası Kapsam",
+        stats_intl_label: "ülke / şehir",
+        stats_intl_note: "5 farklı ülkede ve 17 farklı şehirde fuar, kongre ve etkinlik projeleri yürütüyoruz.",
+
+        stats_clients_eyebrow: "Müşteri Portföyü",
+        stats_clients_label: "farklı şirket",
+        stats_clients_note: "Yaklaşık 180'i ilaç sektörü olmak üzere, 210'dan fazla şirket ile uzun dönemli iş ortaklıkları yürütüyoruz.",
+
+        stats_team_eyebrow: "Ekip &amp; Organizasyon",
+        stats_team_label: "çalışan",
+        stats_team_note: "Farklı uzmanlık alanlarından 120'den fazla çalışanımızla, tasarımdan lojistiğe tüm süreci tek elden yönetiyoruz."
+    },
+    en: {
+        title_main: "Serozan",
+        nav_home: "Home",
+        nav_about: "About",
+        nav_services: "Services",
+        nav_portfolio: "Portfolio",
+        nav_contact: "Contact",
+        nav_tur: "TUR",
+        nav_eng: "ENG",
+        nav_deu: "DEU",
+
+        about_title: "About Us",
+        about_p1: "Our group operates in construction, exhibition stand manufacturing, digital printing solutions, and portable display units. With a background in construction and restoration dating back to 1986, we have been providing exhibition and congress stand manufacturing, sales, rental, storage, assembly–disassembly, and logistics services since 2003 with a growing momentum and innovative approach.",
+        about_p2: "As a result of our long-term efforts, we have also realized our projects related to portable display units used in congresses, fairs, events, product launches, presentations, and promotions. With two new products that are fully designed and manufactured by us and patented under our name, we have started to offer services in this field as well.",
+        about_p3: "With our 3000 m² production facility in Istanbul Sancaktepe (carpentry, metal workshop, paint shop, and digital printing center), warehouse and head office; our 4000 m² warehouse in Antalya Belek and 500 m² warehouse in Kyrenia, Cyprus, we have a wide operational capacity. With our logistics fleet of 18 vehicles and a professional team of 53 people, we manage all processes seamlessly.",
+        about_p4: "With over 35 years of experience and our expert team, we continue to be a reliable, innovative, and solution-oriented partner in construction, architecture, and exhibition stand services.",
+
+        services_title: "Our Services",
+        services_item1: "<strong>Stand Design:</strong> Tailor-made solutions for your brand and event.",
+        services_item2: "<strong>Production:</strong> Professional manufacturing with high-quality materials.",
+        services_item3: "<strong>Logistics:</strong> International transport and coordination.",
+        services_item4: "<strong>Assembly &amp; Dismantling:</strong> Fast and reliable on-site services.",
+        services_item5: "<strong>Storage:</strong> Secure storage areas for your stands.",
+
+        process_title: "Process",
+        process_step1: "Client meeting and needs analysis",
+        process_step2: "Design concept and 3D visualization",
+        process_step3: "Material production and preparation",
+        process_step4: "International transport and on-site installation",
+        process_step5: "Dismantling after the fair",
+        process_step6: "Storage and preparation for future events",
+
+        contact_title: "Contact",
+        contact_text1: "For quotation requests or project discussions:",
+        contact_text2: "E-mail: <a href=\"mailto:info@serozan.com.tr\">info@serozan.com.tr</a>",
+
+        footer_main: "Copyright © 2018 Serozan Exhibition Stands. All rights reserved.",
+
+        stats_install_eyebrow: "Assembly &amp; Dismantling",
+        stats_install_label: "stand setups &amp; teardowns",
+        stats_install_note: "Every year we carry out the installation and dismantling of thousands of stands, mostly between 6–64 m², up to sizes of 920 m².",
+
+        stats_newprod_eyebrow: "New Production &amp; Design",
+        stats_newprod_label: "new stands / year",
+        stats_newprod_note: "We design and produce over 80 new stands per year, creating brand-specific, reusable solutions.",
+
+        stats_area_eyebrow: "Total Installed Area",
+        stats_area_label: "m² stand area / year",
+        stats_area_note: "Across different sectors and events, we install more than 48,000 m² of stand area every year.",
+
+        stats_intl_eyebrow: "International Reach",
+        stats_intl_label: "countries / cities",
+        stats_intl_note: "We deliver exhibition, congress and event projects in 5 different countries and 17 cities.",
+
+        stats_clients_eyebrow: "Client Portfolio",
+        stats_clients_label: "different companies",
+        stats_clients_note: "We work with over 210 companies, around 180 of which are in the pharmaceutical sector, in long-term partnerships.",
+
+        stats_team_eyebrow: "Team &amp; Organization",
+        stats_team_label: "employees",
+        stats_team_note: "With more than 120 employees from different disciplines, we manage the entire process from design to logistics in-house."
+    },
+    de: {
+        title_main: "Serozan",
+        nav_home: "Startseite",
+        nav_about: "Über uns",
+        nav_services: "Leistungen",
+        nav_portfolio: "Referenzen",
+        nav_contact: "Kontakt",
+        nav_tur: "TUR",
+        nav_eng: "ENG",
+        nav_deu: "DEU",
+
+        about_title: "Über uns",
+        about_p1: "Unsere Gruppe ist in den Bereichen Bau, Messestandbau, digitale Drucklösungen und portable Werbeeinheiten tätig. Unsere Erfahrung im Bau und in der Restaurierung reicht bis ins Jahr 1986 zurück. Seit 2003 bieten wir mit zunehmender Dynamik und einem innovativen Ansatz Fertigung, Verkauf, Vermietung, Lagerung, Montage–Demontage und Logistikleistungen im Bereich Messe- und Kongressstände an.",
+        about_p2: "Als Ergebnis unserer langjährigen Arbeit haben wir auch Projekte für portable Werbeeinheiten realisiert, die bei Kongressen, Messen, Veranstaltungen, Produktpräsentationen und Promotion-Aktivitäten eingesetzt werden. Mit zwei neuen Produkten, die vollständig von uns entworfen, produziert und unter unserem Namen patentiert wurden, sind wir nun auch in diesem Bereich tätig.",
+        about_p3: "Mit unserer 3000 m² großen Produktionsfläche in Istanbul-Sancaktepe (Schreinerei, Metallwerkstatt, Lackiererei und Digitaldruckzentrum), unserem Lager und Hauptbüro, unserem 4000 m² Lager in Antalya-Belek und unserem 500 m² Lager in Girne, Zypern, verfügen wir über eine große operative Kapazität. Mit einer Logistikflotte von 18 Fahrzeugen und einem 53-köpfigen professionellen Team steuern wir alle Prozesse reibungslos.",
+        about_p4: "Mit über 35 Jahren Erfahrung und unserem Expertenteam sind wir ein zuverlässiger, innovativer und lösungsorientierter Partner im Bauwesen, in der Architektur und im Messebau.",
+
+        services_title: "Leistungen",
+        services_item1: "<strong>Standdesign:</strong> Individuelle Lösungen für Ihre Marke und Ihre Veranstaltung.",
+        services_item2: "<strong>Produktion:</strong> Professionelle Fertigung mit hochwertigen Materialien.",
+        services_item3: "<strong>Logistik:</strong> Internationale Transporte und Koordination.",
+        services_item4: "<strong>Montage &amp; Demontage:</strong> Schnelle und zuverlässige Arbeiten vor Ort.",
+        services_item5: "<strong>Lagerung:</strong> Sichere Lagerflächen für Ihre Stände.",
+
+        process_title: "Ablauf",
+        process_step1: "Kundengespräch und Bedarfsanalyse",
+        process_step2: "Konzeptentwicklung und 3D-Visualisierung",
+        process_step3: "Materialfertigung und Vorbereitung",
+        process_step4: "Internationaler Transport und Montage vor Ort",
+        process_step5: "Abbau nach der Messe",
+        process_step6: "Lagerung und Vorbereitung für zukünftige Veranstaltungen",
+
+        contact_title: "Kontakt",
+        contact_text1: "Für Angebotsanfragen oder Projektbesprechungen:",
+        contact_text2: "E-Mail: <a href=\"mailto:info@serozan.com.tr\">info@serozan.com.tr</a>",
+
+        footer_main: "Copyright © 2018 Serozan Messestände. Alle Rechte vorbehalten.",
+
+        stats_install_eyebrow: "Montage &amp; Demontage",
+        stats_install_label: "Standauf- und abbau",
+        stats_install_note: "Jedes Jahr übernehmen wir die Montage und Demontage von tausenden Ständen – meist im Bereich von 6–64 m², bis hin zu 920 m².",
+
+        stats_newprod_eyebrow: "Neue Produktion &amp; Design",
+        stats_newprod_label: "neue Stände / Jahr",
+        stats_newprod_note: "Wir entwerfen und produzieren jährlich über 80 neue Stände und entwickeln markenspezifische, wiederverwendbare Lösungen.",
+
+        stats_area_eyebrow: "Installierte Gesamtfläche",
+        stats_area_label: "m² Standfläche / Jahr",
+        stats_area_note: "In verschiedenen Branchen und Veranstaltungen installieren wir jährlich mehr als 48.000 m² Standfläche.",
+
+        stats_intl_eyebrow: "Internationale Präsenz",
+        stats_intl_label: "Länder / Städte",
+        stats_intl_note: "Wir realisieren Messe-, Kongress- und Eventprojekte in 5 Ländern und 17 Städten.",
+
+        stats_clients_eyebrow: "Kundenportfolio",
+        stats_clients_label: "verschiedene Unternehmen",
+        stats_clients_note: "Wir arbeiten mit über 210 Unternehmen zusammen, davon rund 180 aus der Pharmabranche – in langfristigen Partnerschaften.",
+
+        stats_team_eyebrow: "Team &amp; Organisation",
+        stats_team_label: "Mitarbeitende",
+        stats_team_note: "Mit mehr als 120 Mitarbeitenden aus unterschiedlichen Fachbereichen steuern wir den gesamten Prozess von Design bis Logistik aus einer Hand."
+    }
+};
+
+function setLanguage(lang) {
+    localStorage.setItem("lang", lang);
+    applyLanguage(lang);
+}
+
+function applyLanguage(lang) {
+    const map = translations[lang];
+    if (!map) return;
+
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        const value = map[key];
+        if (value) {
+            el.innerHTML = value;
+        }
+    });
+
+    const btn = document.getElementById('lang-button');
+    if (btn) {
+        if (lang === 'tr') {
+            btn.textContent = 'Dil ▾';
+        } else if (lang === 'en') {
+            btn.textContent = 'Language ▾';
+        } else if (lang === 'de') {
+            btn.textContent = 'Sprache ▾';
+        }
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const savedLang = localStorage.getItem("lang") || "tr";
+    applyLanguage(savedLang);
+
+    const dropdown = document.querySelector('.lang-dropdown');
+    const button = document.getElementById('lang-button');
+    if (dropdown && button) {
+        button.addEventListener('click', (e) => {
+            // Prevent page jump but do not toggle visibility;
+            // menu is controlled purely by hover.
+            e.preventDefault();
+        });
+
+        dropdown.querySelectorAll('[data-lang]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const lang = link.getAttribute('data-lang');
+                setLanguage(lang);
+                dropdown.classList.remove('open');
+            });
+        });
+    }
+});
+</script>
+
+<script>
+window.addEventListener('scroll', () => {
+    const bg = document.querySelector('.parallax-bg');
+    if (!bg) return;
+    const y = window.scrollY * 0.25; // slower than content for 3D effect
+    bg.style.backgroundPosition = `center ${-y}px`;
+});
+</script>
+</body>
