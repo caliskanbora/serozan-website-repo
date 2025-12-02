@@ -482,6 +482,13 @@
             transition: opacity 0.3s ease;
         }
 
+        #lightbox-overlay .lightbox-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
         #lightbox-overlay.visible {
             opacity: 1;
             pointer-events: auto;
@@ -498,6 +505,32 @@
 
         #lightbox-overlay.visible img {
             transform: scale(1);
+        }
+
+        .lightbox-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .lightbox-nav {
+            background: rgba(255,255,255,0.85);
+            border: none;
+            color: #111;
+            padding: 14px 18px;
+            cursor: pointer;
+            font-size: 22px;
+            border-radius: 10px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.22);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .lightbox-nav:hover {
+            background: #fff;
+            transform: scale(1.06);
         }
     </style>
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css">
@@ -581,7 +614,6 @@
                 <div class="slides">
                     <img src="images/pharma-stand-1.jpg" alt="Pharma stand 1">
                     <img src="images/pharma-stand-2.jpg" alt="Pharma stand 2">
-                    <img src="images/pharma-stand-3.jpg" alt="Pharma stand 3">
                 </div>
                 <button class="slider-button left" data-prev><i class="fi fi-br-angle-left"></i></button>
                 <button class="slider-button right" data-next><i class="fi fi-br-angle-right"></i></button>
@@ -607,7 +639,6 @@
                 <div class="slides">
                     <img src="images/medtech-stand-1.jpg" alt="MedTech stand 1">
                     <img src="images/medtech-stand-2.jpg" alt="MedTech stand 2">
-                    <img src="images/medtech-stand-3.jpg" alt="MedTech stand 3">
                 </div>
                 <button class="slider-button left" data-prev><i class="fi fi-br-angle-left"></i></button>
                 <button class="slider-button right" data-next><i class="fi fi-br-angle-right"></i></button>
@@ -688,7 +719,17 @@
 </footer>
 
 <div id="lightbox-overlay" aria-hidden="true" role="dialog" tabindex="-1">
-    <img src="" alt="Büyütülmüş Görsel">
+    <div class="lightbox-inner">
+        <img src="" alt="Büyütülmüş Görsel">
+        <div class="lightbox-buttons">
+            <button class="lightbox-nav lightbox-prev" aria-label="Önceki görsel">
+                <i class="fi fi-br-angle-left"></i>
+            </button>
+            <button class="lightbox-nav lightbox-next" aria-label="Sonraki görsel">
+                <i class="fi fi-br-angle-right"></i>
+            </button>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -751,19 +792,66 @@
         window.addEventListener('resize', updateSlider);
     });
 
-    // Lightbox functionality
+    // Lightbox functionality with navigation (per project)
     const overlay = document.getElementById('lightbox-overlay');
-    const overlayImg = overlay.querySelector('img');
+    const overlayImg = overlay.querySelector('.lightbox-inner img');
+    const lightboxPrev = overlay.querySelector('.lightbox-prev');
+    const lightboxNext = overlay.querySelector('.lightbox-next');
 
-    document.querySelectorAll('.slides img').forEach(function(img) {
-        img.addEventListener('click', function() {
-            overlayImg.src = img.src;
-            overlay.classList.add('visible');
+    let currentGroupImages = [];
+    let currentLightboxIndex = -1;
+
+    function openLightboxAt(index) {
+        if (!currentGroupImages || currentGroupImages.length === 0) return;
+        if (index < 0 || index >= currentGroupImages.length) return;
+        currentLightboxIndex = index;
+        overlayImg.src = currentGroupImages[currentLightboxIndex].src;
+        overlay.classList.add('visible');
+    }
+
+    // Her proje kendi içindeki fotoğrafları lightbox'ta gösterir
+    document.querySelectorAll('[data-project]').forEach(projectEl => {
+        const imgs = Array.from(projectEl.querySelectorAll('.slides img'));
+
+        imgs.forEach((img, index) => {
+            img.addEventListener('click', () => {
+                // Sadece tıklanan standtaki fotoğrafları grupla
+                currentGroupImages = imgs;
+                openLightboxAt(index);
+            });
         });
     });
 
-    overlay.addEventListener('click', function() {
+    function showPrevImage() {
+        if (!currentGroupImages || currentGroupImages.length === 0) return;
+        currentLightboxIndex = (currentLightboxIndex - 1 + currentGroupImages.length) % currentGroupImages.length;
+        overlayImg.src = currentGroupImages[currentLightboxIndex].src;
+    }
+
+    function showNextImage() {
+        if (!currentGroupImages || currentGroupImages.length === 0) return;
+        currentLightboxIndex = (currentLightboxIndex + 1) % currentGroupImages.length;
+        overlayImg.src = currentGroupImages[currentLightboxIndex].src;
+    }
+
+    lightboxPrev.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showPrevImage();
+    });
+
+    lightboxNext.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showNextImage();
+    });
+
+    // Close when clicking outside the image
+    overlay.addEventListener('click', () => {
         overlay.classList.remove('visible');
+    });
+
+    // Prevent overlay click when clicking directly on the image
+    overlayImg.addEventListener('click', (e) => {
+        e.stopPropagation();
     });
 </script>
 
