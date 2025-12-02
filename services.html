@@ -463,6 +463,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         megaPortfolio.addEventListener('mouseenter', addBlur);
         megaPortfolio.addEventListener('mouseleave', removeBlur);
+
+        const portfolioLink = portfolioWrapper.querySelector('a[data-i18n="nav_portfolio"]');
+        if (portfolioLink) {
+            portfolioLink.addEventListener('click', (e) => {
+                e.preventDefault();
+            });
+        }
     }
 });
 </script>
